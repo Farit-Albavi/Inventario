@@ -1,0 +1,50 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.container-fluid {
+    height: 100%;
+}
+
+span {
+    width: 25%;
+}
+
+.input-group {
+    margin-top: 10px;
+}
+
+
+.crd {
+    height: 150px;
+    background-color: #EEEEEE;
+    margin: 5px;
+}
+
+.crb {
+    background-color: #EEEEEE;
+}
+
+.card {
+    margin: 20px;
+    text-align: center;
+    width: 18rem;
+}
+
+button {
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.footer {
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    background-color: grey;
+    bottom: 0;
+}
