@@ -19,14 +19,16 @@ class Producto {
     }
 }
 
-
+//Panel de inputs
 let btnIn = (_a = document.getElementById('btnIn')) === null || _a === void 0 ? void 0 : _a.addEventListener("click", function (e) {
     e.preventDefault();
+    const errPrice = document.getElementById("errPrice")
+    const errStock = document.getElementById("errStock")
 
     //instanciamos un objeto con los valores de los inputs como parametro
     let p = new Producto(inputs[0].value, inputs[1].value, inputs[2].value)
 
-    //Validacion de campos vacios
+    //Validacion de campos vacios o negativos
     if (p.name == "") {
         inputs[0].classList.add("is-invalid")
     } else {
@@ -35,19 +37,27 @@ let btnIn = (_a = document.getElementById('btnIn')) === null || _a === void 0 ? 
     }
     if (p.price == "") {
         inputs[1].classList.add("is-invalid")
+        errPrice.textContent = "Este campo no puede estar vacio."
+    } else if (p.price < 0) {
+        inputs[1].classList.add("is-invalid")
+        errPrice.textContent = "Ingrese un numero mayor a 0."
     } else {
         inputs[1].classList.remove("is-invalid")
         inputs[1].classList.add("is-valid")
     }
     if (p.stock == "") {
         inputs[2].classList.add("is-invalid")
+        errStock.textContent = "Este campo no puede estar vacio."
+    } else if (p.stock < 0) {
+        inputs[2].classList.add("is-invalid")
+        errStock.textContent = "Ingrese un numero mayor a 0."
     } else {
         inputs[2].classList.remove("is-invalid")
         inputs[2].classList.add("is-valid")
     }
 
     //Si ningun campo esta vacio, accion =>
-    if (p.name !== "" && p.price !== "" && p.stock !== "") {
+    if (p.name !== "" && p.price !== "" && p.stock !== "" && p.price > 0 && p.stock > 0) {
         arrayProducts.push(p)
         productContainer.classList.remove("hidden")
         addCard()
@@ -63,7 +73,6 @@ let btnIn = (_a = document.getElementById('btnIn')) === null || _a === void 0 ? 
 
         ide++
     }
-
 });
 
 function addCard() {
@@ -107,12 +116,10 @@ function addCard() {
     divCardBody.appendChild(parr)
     divCardBody.appendChild(inpt)
     divCardBody.appendChild(btnVentas)
-
+    //agregar id a cada boton "Vender"
     btnVentas.id = "" + ide
     cardAction(divCardBody, btnVentas, inpt, stockinfo)
 }
-
-
 
 function cardAction(divCardBody, btnVentas, inpt, stockinfo) {
     divCardBody.addEventListener("click", e => {
@@ -126,6 +133,7 @@ function cardAction(divCardBody, btnVentas, inpt, stockinfo) {
             ctnProdSobrante.textContent = Number(cantProduct) - Number(prodVendidos)
         }
 
+        //construir: validar y hacer desaparecer las tarjetas que tengan stock 0
         // if (arrayProducts[btnVentas.id].stock == 0) {}
 
     })
@@ -138,6 +146,9 @@ function calcularStockSobrante(x, y) {
 function calcularGanancias(inpt, btnVentas) {
     return Number(inpt.value) * Number(arrayProducts[btnVentas.id].price)
 }
+
+
+
 
 
 // //info en consola de las variables
