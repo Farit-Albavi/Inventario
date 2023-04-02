@@ -1,15 +1,19 @@
 let ide = 0,
     cantProduct = 0,
-    venta = 0,
-    prodVendidos = 0;
-const inputs = document.querySelectorAll("input")
-const mostrarVentas = document.getElementById("cntVentas")
-const mostrarGanancias = document.getElementById("cntGanancias")
+    ganancias = 0,
+    prodVendidos = 0
+const formInputs = document.querySelectorAll("input")
+const contadorVentas = document.getElementById("cntVentas")
+const contadorGanancias = document.getElementById("cntGanancias")
 const productContainer = document.getElementById("productContainer")
-const productContainer1 = document.getElementById("productContainer1")
+const productList = document.getElementById("productList")
 const cntProdVendidos = document.getElementById("cntProdVendidos")
-const ctnProdSobrante = document.getElementById("ctnProdSobrante")
+const sobraProductos = document.getElementById("ctnProdSobrante")
 let arrayProducts = []
+
+const errName = document.getElementById("errName")
+const errPrice = document.getElementById("errPrice")
+const errStock = document.getElementById("errStock")
 
 class Producto {
     constructor(name, price, stock) {
@@ -19,131 +23,187 @@ class Producto {
     }
 }
 
-
-let btnIn = (_a = document.getElementById('btnIn')) === null || _a === void 0 ? void 0 : _a.addEventListener("click", function (e) {
+//Panel de imputs
+let btnIn = document.getElementById('form').addEventListener("submit", function (e) {
     e.preventDefault();
 
-    //instanciamos un objeto con los valores de los inputs como parametro
-    let p = new Producto(inputs[0].value, inputs[1].value, inputs[2].value)
+    //instanciamos un objeto con los valores de formInputs como parametro
+    let producto = new Producto(formInputs[0].value, parseInt(formInputs[1].value), parseInt(formInputs[2].value))
 
-    //Validacion de campos vacios
-    if (p.name == "") {
-        inputs[0].classList.add("is-invalid")
-    } else {
-        inputs[0].classList.remove("is-invalid")
-        inputs[0].classList.add("is-valid")
-    }
-    if (p.price == "") {
-        inputs[1].classList.add("is-invalid")
-    } else {
-        inputs[1].classList.remove("is-invalid")
-        inputs[1].classList.add("is-valid")
-    }
-    if (p.stock == "") {
-        inputs[2].classList.add("is-invalid")
-    } else {
-        inputs[2].classList.remove("is-invalid")
-        inputs[2].classList.add("is-valid")
-    }
+    //Validacion de campos vacios o negativos
+    const isValidName = validateField(formInputs[0], errName);
+    const isValidPrice = validateField(formInputs[1], errPrice);
+    const isValidStock = validateField(formInputs[2], errStock);
 
     //Si ningun campo esta vacio, accion =>
-    if (p.name !== "" && p.price !== "" && p.stock !== "") {
-        arrayProducts.push(p)
+    if (isValidName && isValidPrice && isValidStock) {
+        arrayProducts.push(producto)
         productContainer.classList.remove("hidden")
         addCard()
 
         //Info de la cantidad de productos cargados
-        cantProduct += Number(inputs[2].value)
-        mostrarVentas.textContent = cantProduct
+        cantProduct += Number(formInputs[2].value)
+        contadorVentas.textContent = cantProduct
 
         //reseteo de imputs
-        inputs[0].value = ""
-        inputs[1].value = ""
-        inputs[2].value = ""
+        document.getElementById("form").reset()
 
+        //id del producto/tarjeta del producto
         ide++
     }
-
+    console.log(arrayProducts);
 });
 
+
+//Funcion para crear la estructura de una tarjeta y añadirla al html
 function addCard() {
-    //Creamos la estructura de la tarjeta
-    const divCol = document.createElement("div")
-    divCol.classList.add("col-3")
-    const divCard = document.createElement("div")
-    divCard.classList.add("card")
-    const divCardBody = document.createElement("div")
-    divCardBody.classList.add("card-body")
-    //Creamos estructura del body de la tarjeta
+    //Col-3 de boostrap
+    const col = document.createElement("div")
+    col.classList.add("col-3")
+
+    //Creamos un card
+    const card = document.createElement("div")
+    card.classList.add("card")
+
+    //Creamos el body del card
+    const cardBody = document.createElement("div")
+    cardBody.classList.add("card-body")
+
+    //creamos elementos del body
     const nombreProducto = document.createElement("h2")
-    const title = document.createElement("h3")
-    //Mostrar nombre del producto
+    const h3tittle = document.createElement("h3")
     nombreProducto.textContent = "Producto: "
-    title.textContent = arrayProducts[ide].name.charAt(0).toUpperCase() + arrayProducts[ide].name.slice(1)
-    const stockTittle = document.createElement("h6")
+    h3tittle.textContent = arrayProducts[ide].name.charAt(0).toUpperCase() + arrayProducts[ide].name.slice(1)
+    const stockTitle = document.createElement("h6")
+
     //mostrar stock
-    stockTittle.textContent = "Cantidad en stock: "
+    stockTitle.textContent = "Cantidad en stock: "
     const stockinfo = document.createElement("h2")
     stockinfo.textContent = arrayProducts[ide].stock
-    stockTittle.appendChild(stockinfo)
+    stockTitle.appendChild(stockinfo)
+
     //venta de productos
-    const parr = document.createElement("p")
-    parr.classList.add("card-text")
-    parr.textContent = "Indique la cantidad vendida: "
+    const parrafo = document.createElement("p")
+    parrafo.classList.add("card-text")
+    parrafo.textContent = "Indique la cantidad vendida: "
     const inpt = document.createElement("input")
     inpt.classList.add("input-group-text", "m-auto")
-    inpt.value = 0, inpt.type = "number"
+    inpt.value = 0;
+    inpt.type = "number"
     const btnVentas = document.createElement("button")
     btnVentas.classList.add("btn", "btn-secondary", "m-auto", "mt-3", "btn-ctrl")
     btnVentas.textContent = "Vender"
-    btnVentas.setAttribute("id", "btnOut")
-    //se arma el esqueleto de la tarjeta
-    productContainer1.appendChild(divCol)
-    divCol.appendChild(divCard)
-    divCard.appendChild(divCardBody)
-    divCardBody.appendChild(nombreProducto)
-    divCardBody.appendChild(title)
-    divCardBody.appendChild(stockTittle)
-    divCardBody.appendChild(parr)
-    divCardBody.appendChild(inpt)
-    divCardBody.appendChild(btnVentas)
 
-    btnVentas.id = "" + ide
-    cardAction(divCardBody, btnVentas, inpt, stockinfo)
+    //añadimos elementos al body
+    cardBody.appendChild(nombreProducto)
+    cardBody.appendChild(h3tittle)
+    cardBody.appendChild(stockTitle)
+    cardBody.appendChild(parrafo)
+    cardBody.appendChild(inpt)
+    cardBody.appendChild(btnVentas)
+
+    //se arma el esqueleto de la tarjeta
+    productList.appendChild(col)
+    col.appendChild(card)
+    card.appendChild(cardBody)
+
+    //agregar id a cada boton "Vender"
+    btnVentas.id = ide.toString();
+    cardAction(cardBody, btnVentas, inpt, stockinfo)
 }
 
+function cardAction(cardBody, btnVentas, inpt, stockinfo) {
+    cardBody.addEventListener("click", e => {
 
-
-function cardAction(divCardBody, btnVentas, inpt, stockinfo) {
-    divCardBody.addEventListener("click", e => {
         if (e.target.classList.contains("btn-ctrl")) {
-            arrayProducts[btnVentas.id].stock = calcularStockSobrante(arrayProducts[btnVentas.id].stock, inpt.value)
-            stockinfo.textContent = arrayProducts[btnVentas.id].stock
-            venta += calcularGanancias(inpt, btnVentas)
-            mostrarGanancias.textContent = venta
-            prodVendidos += Number(inpt.value)
-            cntProdVendidos.textContent = prodVendidos
-            ctnProdSobrante.textContent = Number(cantProduct) - Number(prodVendidos)
+            if (arrayProducts[btnVentas.id].stock >= Number(inpt.value)) {
+                arrayProducts[btnVentas.id].stock = calcularStockSobrante(arrayProducts[btnVentas.id].stock, inpt.value)
+                stockinfo.textContent = arrayProducts[btnVentas.id].stock
+                ganancias += calcularGanancias(inpt.value, arrayProducts[btnVentas.id].price)
+                prodVendidos += Number(inpt.value)
+                contadorGanancias.textContent = ganancias
+                cntProdVendidos.textContent = prodVendidos
+                sobraProductos.textContent = calcularStockSobrante(cantProduct, prodVendidos)
+                // Eliminar la tarjeta si el stock es 0
+                if (arrayProducts[btnVentas.id].stock === 0) {
+                    deleteCard(cardBody, btnVentas)
+                    deleteProduct(btnVentas)
+                    reasignarIds(btnVentas)
+                }
+            } else {
+                // No hay suficiente stock para realizar la venta
+                alert("No hay suficiente stock para realizar esta venta.");
+            }
         }
-
-        // if (arrayProducts[btnVentas.id].stock == 0) {}
-
+        console.log(btnVentas.id);
     })
 }
 
+//funcion para remover la tarjeta cuando el stock es 0
+function deleteCard(cardBody, btnVentas) {
+    const cardToRemove = cardBody.parentElement.parentElement
+    cardToRemove.remove()
+    checkStock()
+}
+
+//Funcion que borra un objeto Producto del array
+function deleteProduct(btnVentas) {
+    arrayProducts.splice(btnVentas.id, 1)
+}
+
+//Funcion que reasigna id's
+function reasignarIds(btnVentas) {
+    for (let currentId = btnVentas.id; currentId < arrayProducts.length; currentId++) {
+        let nextButtonId = parseInt(currentId) + 1;
+        let nextButton = document.getElementById(nextButtonId);
+        nextButton.id = currentId
+        ide = arrayProducts.length
+    }
+}
+
+//Funcion para modificar para que cuando el array sea de 0 elementos agregue la clase hidden
+function checkStock() {
+    const stocks = arrayProducts.map(product => product.stock)
+    const allSold = stocks.every(stock => stock === 0)
+    if (allSold) {
+        productContainer.classList.add("hidden")
+    }
+}
+
 function calcularStockSobrante(x, y) {
-    return x - y
+    return Math.max(x - y, 0)
 }
 
-function calcularGanancias(inpt, btnVentas) {
-    return Number(inpt.value) * Number(arrayProducts[btnVentas.id].price)
+function calcularGanancias(cantidad, precio) {
+    return Number(cantidad) * Number(precio)
+}
+
+//Funcion que valida los campos de entrada
+function validateField(field, errorMessage) {
+    if (field.value === "") {
+        field.classList.add("is-invalid");
+        errorMessage.textContent = "Este campo no puede estar vacío.";
+        return false;
+    } else if (field.value < 0) {
+        field.classList.add("is-invalid");
+        errorMessage.textContent = "Ingrese un número mayor a 0.";
+        return false;
+    } else {
+        field.classList.remove("is-invalid");
+        field.classList.add("is-valid");
+        return true;
+    }
 }
 
 
-// //info en consola de las variables
-// console.log("-------------------------------------");
-// console.log("Id del producto: " + btnVentas.id);
-// console.log("Stock inicial del producto nro " + btnVentas.id + ": " + arrayProducts[btnVentas.id].stock);
-// console.log("Cantidad vendida: " + inpt.value);
-// console.log("Nuevo valor en stock: " + arrayProducts[btnVentas.id].stock);
-// console.log("Ganancias:  " + inpt.value + " * " + arrayProducts[btnVentas.id].price + " = " + venta)
+
+/*  
+Para depurar
+info en consola de las variables
+console.log("-------------------------------------");
+console.log("Id del producto: " + btnVentas.id);
+console.log("Stock inicial del producto nro " + btnVentas.id + ": " + arrayProducts[btnVentas.id].stock);
+console.log("Cantidad vendida: " + inpt.value);
+console.log("Nuevo valor en stock: " + arrayProducts[btnVentas.id].stock);
+console.log("Ganancias:  " + inpt.value + " * " + arrayProducts[btnVentas.id].price + " = " + venta)    
+*/
