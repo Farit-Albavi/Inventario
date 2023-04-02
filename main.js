@@ -28,7 +28,7 @@ let btnIn = document.getElementById('form').addEventListener("submit", function 
     e.preventDefault();
 
     //instanciamos un objeto con los valores de formInputs como parametro
-    let producto = new Producto(formInputs[0].value, formInputs[1].value, formInputs[2].value)
+    let producto = new Producto(formInputs[0].value, parseInt(formInputs[1].value), parseInt(formInputs[2].value))
 
     //Validacion de campos vacios o negativos
     const isValidName = validateField(formInputs[0], errName);
@@ -184,7 +184,7 @@ function validateField(field, errorMessage) {
         field.classList.add("is-invalid");
         errorMessage.textContent = "Este campo no puede estar vacío.";
         return false;
-    } else if (field.value < 0) {
+    } else if (field.value <= 0) {
         field.classList.add("is-invalid");
         errorMessage.textContent = "Ingrese un número mayor a 0.";
         return false;
