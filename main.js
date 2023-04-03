@@ -29,7 +29,6 @@ let btnIn = document.getElementById('form').addEventListener("submit", function 
 
     //instanciamos un objeto con los valores de formInputs como parametro
     let producto = new Producto(formInputs[0].value, parseInt(formInputs[1].value), parseInt(formInputs[2].value))
-
     //Validacion de campos vacios o negativos
     const isValidName = validateField(formInputs[0], errName);
     const isValidPrice = validateField(formInputs[1], errPrice);
@@ -39,21 +38,17 @@ let btnIn = document.getElementById('form').addEventListener("submit", function 
     if (isValidName && isValidPrice && isValidStock) {
         arrayProducts.push(producto)
         productContainer.classList.remove("hidden")
-
         addCard()
-
         //Info de la cantidad de productos cargados
         cantProduct += Number(formInputs[2].value)
         contadorVentas.textContent = cantProduct
-
         //reseteo de imputs
         document.getElementById("form").reset()
-
         //id del producto/tarjeta del producto
         ide++
     }
+    console.log(arrayProducts);
 });
-
 
 //Funcion para crear la estructura de una tarjeta y añadirla al html
 function addCard() {
@@ -74,7 +69,6 @@ function addCard() {
     const nombreProducto = document.createElement("h2")
     const h3tittle = document.createElement("h3")
     nombreProducto.textContent = "Producto: "
-
     h3tittle.textContent = arrayProducts[ide].name.charAt(0).toUpperCase() + arrayProducts[ide].name.slice(1)
     const stockTitle = document.createElement("h6")
 
@@ -110,7 +104,6 @@ function addCard() {
     card.appendChild(cardBody)
 
     //agregar id a cada boton "Vender"
-
     btnVentas.id = ide.toString();
     cardAction(cardBody, btnVentas, inpt, stockinfo)
 }
@@ -142,8 +135,6 @@ function cardAction(cardBody, btnVentas, inpt, stockinfo) {
     })
 }
 
-
-
 //funcion para remover la tarjeta cuando el stock es 0
 function deleteCard(cardBody, btnVentas) {
     const cardToRemove = cardBody.parentElement.parentElement
@@ -152,9 +143,7 @@ function deleteCard(cardBody, btnVentas) {
 }
 
 //Funcion que borra un objeto Producto del array
-function deleteProduct(btnVentas) {
-    arrayProducts.splice(btnVentas.id, 1)
-}
+let deleteProduct = (btnVentas) => arrayProducts.splice(btnVentas.id, 1)
 
 //Funcion que reasigna id's
 function reasignarIds(btnVentas) {
@@ -173,7 +162,6 @@ function reasignarIds(btnVentas) {
     if (ide > arrayProducts.length) {
         ide = ide - 1
     }
-
 }
 
 //Funcion para modificar para que cuando el array sea de 0 elementos agregue la clase hidden
@@ -204,16 +192,3 @@ function validateField(field, errorMessage) {
         return true;
     }
 }
-
-
-
-/*  
-Para depurar
-info en consola de las variables
-console.log("-------------------------------------");
-console.log("Id del producto: " + btnVentas.id);
-console.log("Stock inicial del producto nro " + btnVentas.id + ": " + arrayProducts[btnVentas.id].stock);
-console.log("Cantidad vendida: " + inpt.value);
-console.log("Nuevo valor en stock: " + arrayProducts[btnVentas.id].stock);
-console.log("Ganancias:  " + inpt.value + " * " + arrayProducts[btnVentas.id].price + " = " + venta)    
-*/
