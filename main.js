@@ -39,6 +39,7 @@ let btnIn = document.getElementById('form').addEventListener("submit", function 
     if (isValidName && isValidPrice && isValidStock) {
         arrayProducts.push(producto)
         productContainer.classList.remove("hidden")
+
         addCard()
 
         //Info de la cantidad de productos cargados
@@ -51,12 +52,12 @@ let btnIn = document.getElementById('form').addEventListener("submit", function 
         //id del producto/tarjeta del producto
         ide++
     }
-    console.log(arrayProducts);
 });
 
 
 //Funcion para crear la estructura de una tarjeta y añadirla al html
 function addCard() {
+
     //Col-3 de boostrap
     const col = document.createElement("div")
     col.classList.add("col-3")
@@ -73,6 +74,7 @@ function addCard() {
     const nombreProducto = document.createElement("h2")
     const h3tittle = document.createElement("h3")
     nombreProducto.textContent = "Producto: "
+
     h3tittle.textContent = arrayProducts[ide].name.charAt(0).toUpperCase() + arrayProducts[ide].name.slice(1)
     const stockTitle = document.createElement("h6")
 
@@ -108,6 +110,7 @@ function addCard() {
     card.appendChild(cardBody)
 
     //agregar id a cada boton "Vender"
+
     btnVentas.id = ide.toString();
     cardAction(cardBody, btnVentas, inpt, stockinfo)
 }
@@ -135,9 +138,11 @@ function cardAction(cardBody, btnVentas, inpt, stockinfo) {
                 alert("No hay suficiente stock para realizar esta venta.");
             }
         }
-        console.log(btnVentas.id);
+        console.log("Id del boton: " + btnVentas.id);
     })
 }
+
+
 
 //funcion para remover la tarjeta cuando el stock es 0
 function deleteCard(cardBody, btnVentas) {
@@ -159,6 +164,16 @@ function reasignarIds(btnVentas) {
         nextButton.id = currentId
         ide = arrayProducts.length
     }
+
+    //modificamos ambos extremos
+    if (arrayProducts.length === 0) {
+        ide = 0
+    }
+
+    if (ide > arrayProducts.length) {
+        ide = ide - 1
+    }
+
 }
 
 //Funcion para modificar para que cuando el array sea de 0 elementos agregue la clase hidden
@@ -170,13 +185,8 @@ function checkStock() {
     }
 }
 
-function calcularStockSobrante(x, y) {
-    return Math.max(x - y, 0)
-}
-
-function calcularGanancias(cantidad, precio) {
-    return Number(cantidad) * Number(precio)
-}
+const calcularStockSobrante = (x, y) => Math.max(x - y, 0)
+const calcularGanancias = (cantidad, precio) => Number(cantidad) * Number(precio)
 
 //Funcion que valida los campos de entrada
 function validateField(field, errorMessage) {
