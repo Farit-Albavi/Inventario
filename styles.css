@@ -49,3 +49,12 @@ button {
     bottom: 0;
 }
 
+
+@media (max-width: 768px) {
+
+    span{
+        width: 500px;
+    }
+
+
+}
